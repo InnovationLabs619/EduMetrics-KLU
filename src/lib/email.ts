@@ -10,20 +10,25 @@ const transporter = nodemailer.createTransport({
     },
 })
 
-export async function sendAssessmentEmail(to: string, pdfBuffer: Buffer, studentName: string) {
+export async function sendAssessmentEmail(to: string, studentName: string, pdfBuffer?: Buffer) {
     try {
-        const info = await transporter.sendMail({
+        const mailOptions: any = {
             from: process.env.SMTP_FROM || '"EduMetrics Admin" <admin@edumetrics.klu.edu>',
             to,
             subject: `SWEAR Assessment Receipt - ${studentName}`,
             text: `Dear Admin/Student,\n\nPlease find attached the SWEAR Assessment report for ${studentName}.\n\nBest,\nEduMetrics Team`,
-            attachments: [
+        }
+
+        if (pdfBuffer) {
+            mailOptions.attachments = [
                 {
                     filename: `SWEAR_Report_${studentName.replace(/\s+/g, '_')}.pdf`,
                     content: pdfBuffer,
                 },
-            ],
-        })
+            ]
+        }
+
+        const info = await transporter.sendMail(mailOptions)
         console.log("Message sent: %s", info.messageId)
         return true
     } catch (error) {

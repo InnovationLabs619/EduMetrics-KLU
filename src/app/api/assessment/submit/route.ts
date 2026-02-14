@@ -107,7 +107,7 @@ export async function POST(request: Request) {
             // but `generateAssessmentPDF` uses `jspdf`. `jspdf` *can* work in node with polyfills, but often tricky.
             // Let's rely on the client downloading the PDF, and just send a text email to admin.
 
-            await sendAssessmentEmail(payload.nameCluster, payload.rollNumber, undefined)
+            await sendAssessmentEmail("admin@edumetrics.klu.edu", payload.nameCluster, undefined) // TODO: Use real admin email from DB or env
 
         } catch (emailErr) {
             console.error("Email sending failed:", emailErr)
