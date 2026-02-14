@@ -3,7 +3,8 @@ import { prisma } from '@/lib/prisma'
 import { generateAssessmentPDF } from '@/lib/pdf'
 import { SwearData } from '@/types/assessment'
 
-export async function GET(_request: Request, { params }: { params: { id: string } }) {
+export async function GET(_request: Request, props: { params: Promise<{ id: string }> }) {
+    const params = await props.params;
     try {
         const id = params.id
 
