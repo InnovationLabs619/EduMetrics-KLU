@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id          String       @id @default(uuid())
+  rollNumber  String       @unique
+  nameCluster String
+  groupName   String
+  createdAt   DateTime     @default(now())
+  assessments Assessment[]
+}
+
+model Assessment {
+  id            String   @id @default(uuid())
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id])
+  swearDataJson Json     // Stores the detailed assessment data from Tri-Panel UI
+  signatureBlob String   // Base64 encoded signature
+  status        String   // e.g., "PENDING", "COMPLETED"
+  submittedAt   DateTime @default(now())
+}
+
+model Admin {
+  id                  String  @id @default(uuid())
+  email               String  @unique
+  notificationEnabled Boolean @default(true)
+}
